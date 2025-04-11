@@ -1,0 +1,21 @@
+#wplp-banner {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    max-height: 60px;
+    background: #000;
+    color: #fff;
+    padding: 10px 20px;
+    font-size: 16px;
+    text-align: center;
+    z-index: 9999;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+}
+
+body.admin-bar #wplp-banner {
+    top: 32px;
+}
+body.admin-bar {
+    padding-top: 92px; /* 60 + 32 */
+}
