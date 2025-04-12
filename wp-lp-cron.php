@@ -1,9 +1,10 @@
 <?php
 /**
- * Plugin Name: WP Landing Page Cronômetro
- * Description: Exibe um cronômetro em contagem regressiva no topo de páginas específicas do WordPress e Produtos do WooCommerce.
- * Version: 0.1
+ * Plugin Name: WP Landing Page Timer
+ * Description: Display a customizable countdown timer on specific pages and WooCommerce products, with full control via the WordPress admin panel.
+ * Version: 0.2
  * Author: Marco Floriano
+ * Author URI: http://setor9.com.br/
  */
 
 if (!defined('ABSPATH')) exit;
@@ -19,6 +20,8 @@ add_action('wp_enqueue_scripts', 'wplp_enqueue_assets');
 function wplp_injetar_banner() {
     $options = get_option('wplp_cron_settings');
     if (!$options) return;
+
+    if (empty($options['enable_banner'])) return; // banner desativado manualmente
 
     $pagina_atual = get_the_ID();
     $ativadas = $options['ids'] ?? [];
@@ -112,6 +115,86 @@ function wplp_cron_admin_page() {
                         </fieldset>
                     </td>
                 </tr>
+                <tr>
+                    <th>Exibir banner fixo no topo?</th>
+                    <td>
+                        <label>
+                            <input type="checkbox" name="wplp_cron_settings[enable_banner]" value="1" <?php checked(!empty($options['enable_banner'])); ?>>
+                            Sim, exibir o cronômetro automaticamente no topo das páginas selecionadas.
+                        </label>
+                    </td>
+                </tr>
+                <!-- ESTILOS DO TÍTULO -->
+                <tr><th colspan="2"><h3>Estilo do Título</h3></th></tr>
+                <tr>
+                    <th>Cor</th>
+                    <td><input type="color" name="wplp_cron_settings[title_style][color]" value="<?php echo esc_attr($options['title_style']['color'] ?? '#000000'); ?>"></td>
+                </tr>
+                <tr>
+                    <th>Tamanho da fonte</th>
+                    <td><input type="text" name="wplp_cron_settings[title_style][size]" value="<?php echo esc_attr($options['title_style']['size'] ?? '20px'); ?>"></td>
+                </tr>
+                <tr>
+                    <th>Disposição</th>
+                    <td>
+                        <select name="wplp_cron_settings[title_style][display]">
+                            <option value="block" <?php selected($options['title_style']['display'] ?? '', 'block'); ?>>Em linha separada</option>
+                            <option value="inline" <?php selected($options['title_style']['display'] ?? '', 'inline'); ?>>Na mesma linha</option>
+                        </select>
+                    </td>
+                </tr>
+
+                <!-- ESTILOS DA DESCRIÇÃO -->
+                <tr><th colspan="2"><h3>Estilo da Descrição</h3></th></tr>
+                <tr>
+                    <th>Cor</th>
+                    <td><input type="color" name="wplp_cron_settings[desc_style][color]" value="<?php echo esc_attr($options['desc_style']['color'] ?? '#333333'); ?>"></td>
+                </tr>
+                <tr>
+                    <th>Tamanho da fonte</th>
+                    <td><input type="text" name="wplp_cron_settings[desc_style][size]" value="<?php echo esc_attr($options['desc_style']['size'] ?? '16px'); ?>"></td>
+                </tr>
+                <tr>
+                    <th>Disposição</th>
+                    <td>
+                        <select name="wplp_cron_settings[desc_style][display]">
+                            <option value="block" <?php selected($options['desc_style']['display'] ?? '', 'block'); ?>>Em linha separada</option>
+                            <option value="inline" <?php selected($options['desc_style']['display'] ?? '', 'inline'); ?>>Na mesma linha</option>
+                        </select>
+                    </td>
+                </tr>
+
+                <!-- ESTILOS DO CRONÔMETRO -->
+                <tr><th colspan="2"><h3>Estilo do Cronômetro</h3></th></tr>
+                <tr>
+                    <th>Cor</th>
+                    <td><input type="color" name="wplp_cron_settings[time_style][color]" value="<?php echo esc_attr($options['time_style']['color'] ?? '#ff0000'); ?>"></td>
+                </tr>
+                <tr>
+                    <th>Tamanho da fonte</th>
+                    <td><input type="text" name="wplp_cron_settings[time_style][size]" value="<?php echo esc_attr($options['time_style']['size'] ?? '18px'); ?>"></td>
+                </tr>
+                <tr>
+                    <th>Disposição</th>
+                    <td>
+                        <select name="wplp_cron_settings[time_style][display]">
+                            <option value="block" <?php selected($options['time_style']['display'] ?? '', 'block'); ?>>Em linha separada</option>
+                            <option value="inline" <?php selected($options['time_style']['display'] ?? '', 'inline'); ?>>Na mesma linha</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <th>Visual do Cronômetro</th>
+                    <td>
+                        <select name="wplp_cron_settings[style_template]">
+                            <option value="default" <?php selected($options['style_template'] ?? '', 'default'); ?>>Simples</option>
+                            <option value="neon" <?php selected($options['style_template'] ?? '', 'neon'); ?>>Neon Digital</option>
+                            <option value="box" <?php selected($options['style_template'] ?? '', 'box'); ?>>Caixas Promocionais</option>
+                        </select>
+                        <p class="description">Escolha o estilo visual do cronômetro para o shortcode.</p>
+                    </td>
+                </tr>
+
             </table>
 
             <?php submit_button('Salvar Configurações'); ?>
@@ -120,10 +203,55 @@ function wplp_cron_admin_page() {
     <?php
 }
 
-
 // Registra a opção no banco
 function wplp_cron_register_settings() {
     register_setting('wplp_cron_group', 'wplp_cron_settings');
 }
 add_action('admin_init', 'wplp_cron_register_settings');
+
+function wplp_style_inline($s) {
+    return sprintf(
+        'color:%s; font-size:%s; display:%s;',
+        esc_attr($s['color'] ?? '#000'),
+        esc_attr($s['size'] ?? '16px'),
+        esc_attr($s['display'] ?? 'block')
+    );
+}
+
+function wplp_cron_shortcode() {
+    $options = get_option('wplp_cron_settings');
+    $template = $options['style_template'] ?? 'default';
+
+    if (!$options) return '';
+
+    $end_time_str = $options['datetime'] ?? '';
+    $now = current_time('timestamp');
+    $end_timestamp = strtotime($end_time_str);
+
+    if (!$end_time_str || $end_timestamp < $now) return '';
+
+    // Converte para formato ISO 8601 (compatível com JS)
+    $end_time_iso = date('Y-m-d\TH:i:s', $end_timestamp);
+
+    // Dados do conteúdo
+    $titulo    = esc_html($options['title'] ?? '');
+    $descricao = esc_html($options['description'] ?? '');
+
+    // Estilos salvos no painel
+    $title_style = $options['title_style'] ?? [];
+    $desc_style  = $options['desc_style'] ?? [];
+    $time_style  = $options['time_style'] ?? [];
+
+    ob_start(); ?>
+    <div class="wplp-shortcode template-<?php echo esc_attr($template); ?>" data-endtime="<?php echo esc_attr($end_time_iso); ?>">
+        <span class="wplp-title" style="<?php echo wplp_style_inline($title_style); ?>"><?php echo $titulo; ?></span>
+        <span class="wplp-description" style="<?php echo wplp_style_inline($desc_style); ?>"><?php echo $descricao; ?></span>
+        <span class="wplp-countdown" style="<?php echo wplp_style_inline($time_style); ?>"></span>
+    </div>
+    <?php
+    return ob_get_clean();
+}
+add_shortcode('wp_lp_cron', 'wplp_cron_shortcode');
+
+
 

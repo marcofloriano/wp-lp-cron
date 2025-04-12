@@ -19,3 +19,42 @@ body.admin-bar #wplp-banner {
 body.admin-bar {
     padding-top: 92px; /* 60 + 32 */
 }
+/* Neon Digital */
+.template-neon .wplp-countdown {
+    color: #ffff00;
+    font-size: 64px;
+    font-weight: bold;
+    font-family: 'Courier New', monospace;
+    background: rgba(0,0,0,0.8);
+    padding: 10px 20px;
+    border: 2px solid #ffff00;
+    border-radius: 10px;
+    display: inline-block;
+    text-align: center;
+}
+/* Promo Box */
+.template-box .wplp-countdown {
+    display: flex !important;
+    justify-content: center !important;
+    gap: 10px !important;
+    margin-top: 20px !important;
+}
+.template-box .wplp-countdown span {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: #f44336;
+    color: white;
+    padding: 10px;
+    font-size: 24px;
+    border-radius: 6px;
+    font-weight: bold;
+    min-width: 60px;
+}
+.template-box .wplp-countdown small {
+    font-size: 12px;
+    font-weight: normal;
+    margin-top: 4px;
+    color: #fff;
+}
+

@@ -1,27 +1,39 @@
 document.addEventListener('DOMContentLoaded', function () {
-    const banner = document.getElementById('wplp-banner');
-    if (!banner) return;
+    const cronometros = document.querySelectorAll('[data-endtime]');
+    cronometros.forEach(function (el) {
+        const countdownEl = el.querySelector('.wplp-countdown');
+        if (!countdownEl) return;
 
-    const countdownEl = document.getElementById('wplp-countdown');
-    const endTime = new Date(banner.dataset.endtime).getTime();
+        const endTime = new Date(el.dataset.endtime).getTime();
+        const template = el.classList.contains('template-box') ? 'box' : 'simple';
 
-    function updateCountdown() {
-        const now = new Date().getTime();
-        const distance = endTime - now;
+        function updateCountdown() {
+            const now = new Date().getTime();
+            const distance = endTime - now;
 
-        if (distance <= 0) {
-            countdownEl.innerText = 'Encerrado!';
-            return;
+            if (distance <= 0) {
+                countdownEl.innerText = 'Encerrado!';
+                return;
+            }
+
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            if (template === 'box') {
+                countdownEl.innerHTML = `
+                    <span><div>${days}</div><small>dias</small></span>
+                    <span><div>${hours}</div><small>horas</small></span>
+                    <span><div>${minutes}</div><small>minutos</small></span>
+                    <span><div>${seconds}</div><small>segundos</small></span>
+                `;
+            } else {
+                countdownEl.innerText = `${days}d ${hours}h ${minutes}m ${seconds}s`;
+            }
         }
 
-        const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-        const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-        const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-        const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-
-        countdownEl.innerText = `${days}d ${hours}h ${minutes}m ${seconds}s`;
-    }
-
-    updateCountdown();
-    setInterval(updateCountdown, 1000);
+        updateCountdown();
+        setInterval(updateCountdown, 1000);
+    });
 });
