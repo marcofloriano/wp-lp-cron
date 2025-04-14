@@ -1,6 +1,6 @@
 <?php
 /**
- * Plugin Name: WP Landing Page Timer
+ * Plugin Name: WP Lp Cron
  * Description: Display a customizable countdown timer on specific pages and WooCommerce products, with full control via the WordPress admin panel.
  * Version: 0.2
  * Author: Marco Floriano
@@ -220,10 +220,14 @@ function wplp_style_inline($s) {
 
 function wplp_cron_shortcode() {
     $options = get_option('wplp_cron_settings');
-    $template = $options['style_template'] ?? 'default';
-
     if (!$options) return '';
 
+    // Verifica se a página ou produto atual está autorizada
+    $pagina_atual = get_the_ID();
+    $ativadas = $options['ids'] ?? [];
+    if (!in_array($pagina_atual, $ativadas)) return '';
+
+    // Verifica validade da data/hora
     $end_time_str = $options['datetime'] ?? '';
     $now = current_time('timestamp');
     $end_timestamp = strtotime($end_time_str);
@@ -236,6 +240,7 @@ function wplp_cron_shortcode() {
     // Dados do conteúdo
     $titulo    = esc_html($options['title'] ?? '');
     $descricao = esc_html($options['description'] ?? '');
+    $template  = $options['style_template'] ?? 'default';
 
     // Estilos salvos no painel
     $title_style = $options['title_style'] ?? [];

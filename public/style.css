@@ -16,9 +16,7 @@
 body.admin-bar #wplp-banner {
     top: 32px;
 }
-body.admin-bar {
-    padding-top: 92px; /* 60 + 32 */
-}
+
 /* Neon Digital */
 .template-neon .wplp-countdown {
     color: #ffff00;

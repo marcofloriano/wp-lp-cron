@@ -1,77 +1,56 @@
-=== WP Lp Cron ===
-Contributors: setor9
-Donate link: https://setor9.com.br/
-Tags: countdown, timer, landing page, cronometro, woocommerce, promotion
-Requires at least: 5.4
-Tested up to: 6.5
-Requires PHP: 7.2
-Stable tag: 0.1
-License: GPLv2 or later
-License URI: https://www.gnu.org/licenses/gpl-2.0.html
+# WP LP Cron
 
-Display a customizable countdown timer on specific pages and WooCommerce products, with full control via the WordPress admin panel.
+**WordPress plugin to display customizable countdown timers on pages and WooCommerce products**
 
-== Description ==
+**WP LP Cron** is a very simple plugin that allows you to display countdown timers (days, hours, minutes, and seconds) on selected WordPress pages and WooCommerce products. Ideal for time-limited promotions, launches, events, and deadlines.
 
-**WP Lp Cron** adds a clean, flexible, and easy-to-configure countdown timer to any WordPress page or WooCommerce product. Designed for landing pages, time-sensitive offers, or event countdowns, this plugin offers:
+## Features
 
-- A fixed top banner with a live countdown
-- A shortcode `[wp_lp_cron]` to embed the countdown anywhere
-- Visual style customization via the admin panel
-- Automatic reset after the countdown ends
+- Display a countdown timer on:
+  - Selected WordPress pages
+  - WooCommerce product pages
+- Set end **date and time** via admin interface
+- Add a **title** and **description** to the banner
+- Timer **automatically disappears** when it ends
+- **Enable/disable automatic banner injection** on pages (avoids duplication when using shortcode)
+- Display the timer manually anywhere using the `[wp_lp_cron]` **shortcode**
+- Full **styling customization** for shortcode elements:
+  - Font **color**
+  - Font **size**
+  - **Inline or block layout** for:
+    - Title
+    - Description
+    - Timer
+- Choose between multiple **visual templates**:
+  - ✅ **Default**
+  - 💡 **Neon Digital**
+  - 🟥 **Promotional Box** (eCommerce style)
+- Shortcode is also restricted to selected pages/products (like the banner)
+- JavaScript countdown with live updates and "Expired" fallback
+- Automatically removes expired timers from all pages
 
-Perfect for promotions, product launches, events, or expiring deals.
+## Installation
 
-**Main Features:**
+1. Upload the `wp-lp-cron` folder to the `/wp-content/plugins/` directory, or install via the WordPress plugin dashboard.
+2. Activate the plugin from the **Plugins** menu.
+3. Go to the **WP LP Cron** settings page to configure the countdown timer.
 
-- Fixed countdown banner at the top of selected pages/products
-- Admin panel to configure:
-  - End date and time
-  - Title and description
-  - Pages and products to show the timer
-  - Enable/disable the top banner
-- Shortcode `[wp_lp_cron]` with styling defined in the admin panel
-- Visual customization for title, description and timer:
-  - Text color
-  - Font size
-  - Layout (inline or block)
-- Automatic deactivation when the timer expires
-- Fully responsive and WooCommerce compatible
+## How to Use
 
-== Installation ==
+### Automatic Banner Display
 
-1. Upload the plugin folder to `/wp-content/plugins/wp-lp-cron`
-2. Activate the plugin through the “Plugins” menu in WordPress
-3. Go to **WP Lp Cron** in the WordPress admin menu
-4. Configure your countdown settings and choose where to display it
+1. In the admin dashboard, navigate to **WP LP Cron**.
+2. Select the pages and/or WooCommerce products where the timer should appear.
+3. Set the **end date/time**, **title**, and **description**.
+4. Choose a **visual style** (e.g., Neon, Promo Box)
+5. Enable or disable **automatic banner injection**.
+6. Save changes.
 
-== Frequently Asked Questions ==
+> When enabled, the banner appears at the top of selected pages and disappears after expiration.
 
-= Does the timer disappear after the time ends? =
-Yes. The plugin automatically disables the banner and stops rendering the shortcode after the countdown expires.
+### Manual Display with Shortcode
 
-= Can I use multiple countdowns? =
-Not yet. The current version supports one global countdown. Multi-countdown support is planned for future versions.
+Use the shortcode below to manually add the timer anywhere (post, page, widget, template):
 
-= Is the shortcode required? =
-No. If you enable the top banner, it will appear automatically on the selected pages. The shortcode is optional.
-
-== Screenshots ==
-
-1. Countdown banner at the top of the page
-2. Admin panel settings for customizing the timer
-3. Visual style options for the shortcode
-
-== Changelog ==
-
-= 0.1 =
-* Initial release with banner, admin panel, shortcode, and auto-reset.
-
-== Upgrade Notice ==
-
-= 0.2 =
-First version – simple and powerful countdown for landing pages and WooCommerce.
-
-== License ==
-
-This plugin is licensed under the GPLv2 or later.
+```php
+[wp_lp_cron]
