@@ -56,12 +56,13 @@ function wplp_cron_add_admin_menu() {
     add_menu_page(
         'WP Lp Cron',
         'WP Lp Cron',
-        'manage_options',
+        'manage_woocommerce', // Agora visível para Administradores e Gerentes da loja
         'wp-lp-cron',
         'wplp_cron_admin_page',
         'dashicons-clock',
         25
     );
+
 }
 add_action('admin_menu', 'wplp_cron_add_admin_menu');
 
